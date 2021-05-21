@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix
 from Packages.data import load_csv_to_dataframe, show_tree, plot_roc_curve, plot_feature_importance
 
 # Load data
-file = './Data/data.csv'
+file = '../Data/data.csv'
 df = load_csv_to_dataframe(file)
 # print(data.head())
 
