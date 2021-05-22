@@ -26,6 +26,9 @@ def load_csv_to_dataframe(file):
     df['Churn_cat'] = (df['Churn'] == 'Yes').astype(int)
 
     df['SeniorCitizen'] = df['SeniorCitizen'].astype('object')
+    sencit = {0: 'No',
+              1: 'Yes'}
+    df = df.replace({"SeniorCitizen": sencit})
 
     # Create category bins for continuous data ('tenure', 'Monthly Charges', 'Total Charges')
 
