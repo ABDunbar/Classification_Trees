@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from Packages.data import load_csv_to_dataframe, plot_roc_curve, plot_feature_importance # show_tree,
+from Packages.data import load_csv_to_dataframe, plot_roc_curve, plot_feature_importance  # show_tree,
 from Packages.data import plot_learning_curves, train_test
 from sklearn.model_selection import cross_val_predict, cross_val_score, GridSearchCV
 from sklearn.tree import DecisionTreeClassifier
@@ -39,7 +39,7 @@ y_predict = tree_clf.predict(X_test)
 
 # Use Grid Search CV to find 'best' parameters
 
-params = {'max_depth' : [2, 5, 10, 20],
+params = {'max_depth': [2, 5, 10, 20],
           'min_samples_split': [3, 10, 30],
           'max_leaf_nodes': [3, 10, 30],
           'max_features': [3, 10, 30],
@@ -78,30 +78,28 @@ print(f"Accuracy on test:       {best_model_task1.score(X_test, y_test):.4f}")
 print(f"Accuracy on cv=5:       {best_model_task1.score(X_train, y_predict_cv):.4f}")
 print()
 print("Precision, Recall, F1 scores for 'Best Parameters'")
-print("="*42)
+print("=" * 42)
 print(f"Precision: {precision_score(y_test, y_predict_bp):.4f}")
 print(f"Recall:    {recall_score(y_test, y_predict_bp):.4f}")
 print(f"F1:        {f1_score(y_test, y_predict_bp):.4f}")
-print('*'*8 + "Cross-Validation "+'*'*8)
+print('*' * 8 + "Cross-Validation " + '*' * 8)
 print(f"Precision: {precision_score(y_train, y_predict_bp_cv):.4f}")
 print(f"Recall:    {recall_score(y_train, y_predict_bp_cv):.4f}")
 print(f"F1:        {f1_score(y_train, y_predict_bp_cv):.4f}")
 print()
 print("=====  y_test -- y_predict_best_parameters  =====")
-print("="*55)
+print("=" * 55)
 print(classification_report(y_test, y_predict_bp))
 
-
 # ROC Curve
-
 # Compute y scores for input to metrics
-y_probas = cross_val_predict(best_model_task1, X_train, y_train, cv=5, method='predict_proba')  # method='decision_function'
+y_probas = cross_val_predict(best_model_task1, X_train, y_train, cv=5,
+                             method='predict_proba')  # method='decision_function'
 y_scores = y_probas[:, 1]
-
 fpr, tpr, thresholds = roc_curve(y_train, y_scores)
 plot_roc_curve(fpr, tpr)
 
 # ROC AUC Curve
 print(f"ROC AUC: {roc_auc_score(y_train, y_scores):.4f}")
 
-plot_feature_importance(X, best_model_task1)
+# plot_feature_importance(X, best_model_task1)

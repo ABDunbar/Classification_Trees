@@ -105,4 +105,4 @@ feature_cols = X.columns
 # pydotplus.graphviz.InvocationException: GraphViz's executables not found
 # works in Linux after sudo apt-get install graphviz
 # for Win10, might have to edit Environment variable ???
-# show_tree(tree_clf, feature_cols, './Images/tree.png')
+show_tree(tree_clf, feature_cols, './Images/tree.png')

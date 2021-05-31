@@ -1,10 +1,7 @@
 import pandas as pd
 import numpy as np
-import io
-from sklearn.tree import DecisionTreeClassifier, export_graphviz
-# import pydotplus # issue with Anaconda
-# from scipy import misc  # imageio replaces
-import imageio
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 
@@ -46,15 +43,6 @@ def load_csv_to_dataframe(file):
     return df
 
 
-def show_tree(tree_classifier, features, path):
-    f = io.StringIO()
-    export_graphviz(tree_classifier, out_file=f, feature_names=features)
-    pydotplus.graph_from_dot_data(f.getvalue()).write_png(path)
-    img = imageio.imread(path)
-    plt.rcParams["figure.figsize"] = (20, 20)
-    plt.imshow(img)
-
-
 def plot_roc_curve(fpr, tpr, label=None):
     plt.plot(fpr, tpr, linewidth=2, label=label)
     plt.plot([0, 1], [0, 1], 'k--')
@@ -72,3 +60,35 @@ def plot_feature_importance(df, model):
     plt.ylim(-1, n_features)
     plt.savefig('./Images/Feature_importance.png')
     # plt.show()
+
+
+# Training Set Size on Error Stability
+
+def plot_learning_curves(model, X, y, num_samples):
+    #X_train, X_test, X_valid, y_train, y_test, y_valid = train_test_valid(X, y)
+    X_train, X_test, y_train, y_test, = train_test(X, y)
+    train_errors, test_errors = [], []
+    #valid_errors = []
+    for m in range(1, int(num_samples)):
+        model.fit(X_train[:m], y_train[:m])
+        y_predict = model.predict(X_train[:m])
+        y_test_predict = model.predict(X_test)
+        #y_valid_predict = model.predict(X_valid)
+        train_errors.append(mean_squared_error(y_train[:m], y_predict))
+        test_errors.append(mean_squared_error(y_test, y_test_predict))
+        #val_errors.append(mean_squared_error(y_valid, y_valid_predict))
+
+    plt.plot(np.sqrt(train_errors), "r-+", lw=1, label="train")
+    plt.plot(np.sqrt(test_errors), "b--", lw=2, label="test")
+    #plt.plot(np.sqrt(val_errors), "g-", lw=2, label='validation')
+
+
+def train_test_valid(X, y):
+    X_trainval, X_test, y_trainval, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
+    X_train, X_valid, y_train, y_valid = train_test_split(X_trainval, y_trainval, test_size=0.2,  random_state=42)
+    return X_train, X_test, X_valid, y_train, y_test, y_valid
+
+
+def train_test(X, y):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42) #
+    return X_train, X_test, y_train, y_test
